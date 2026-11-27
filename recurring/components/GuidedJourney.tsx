@@ -1,6 +1,7 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { TouchEvent } from "react";
+import { gsap } from "gsap";
 
 const chapters = [
  { eyebrow:"01 · A SEQUENCE", title:"A machine reads one moment at a time.", deck:"A sequence is more than a row of isolated inputs. Each new element arrives with a past already behind it.", seconds:6 },
@@ -92,11 +93,33 @@ function ChapterVisual({index}:{index:number}) {
 }
 export function GuidedJourney() {
  const [active,setActive]=useState(0); const [ready,setReady]=useState(false);
- const touchStart=useRef<number|null>(null); const lastNav=useRef(0); const chapter=chapters[active];
+ const [cueVariant,setCueVariant]=useState(0); const [cueSide,setCueSide]=useState<"left"|"right">("right");
+ const touchStart=useRef<number|null>(null); const lastNav=useRef(0); const changing=useRef(false);
+ const copyRef=useRef<HTMLDivElement>(null); const visualRef=useRef<HTMLDivElement>(null); const chapter=chapters[active];
+ const cues=["follow the signal · scroll down","the next thought is below · scroll","swipe up when you're ready","let the story carry on · scroll","lift the page to follow"];
  const words=useMemo(()=>chapter.deck.split(/\s+/).length,[chapter.deck]); const dwell=Math.min(10500,Math.max(chapter.seconds*1000,3500+words*85));
- useEffect(()=>{setReady(false);const timer=window.setTimeout(()=>setReady(true),dwell);return()=>window.clearTimeout(timer);},[active,dwell]);
- const previous=useCallback(()=>{const now=Date.now();if(now-lastNav.current<700)return;if(active>0){lastNav.current=now;setActive(i=>Math.max(0,i-1));}},[active]);
- const next=useCallback(()=>{const now=Date.now();if(!ready||now-lastNav.current<700)return;if(active<chapters.length-1){lastNav.current=now;setActive(i=>Math.min(chapters.length-1,i+1));}},[active,ready]);
+ useEffect(()=>{setReady(false);const timer=window.setTimeout(()=>{setCueVariant(Math.floor(Math.random()*cues.length));setCueSide(Math.random()>.5?"left":"right");setReady(true);},dwell);return()=>window.clearTimeout(timer);},[active,dwell]);
+ useLayoutEffect(()=>{
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const ctx=gsap.context(()=>{
+   gsap.fromTo(copyRef.current,{y:30,opacity:0},{y:0,opacity:1,duration:.72,ease:"power3.out"});
+   gsap.fromTo(visualRef.current,{y:14,scale:.965,opacity:0,rotateX:-2},{y:0,scale:1,opacity:1,rotateX:0,duration:.9,delay:.08,ease:"power3.out"});
+   gsap.fromTo(".chapter-eyebrow, .chapter-deck, .chapter-index",{y:12,opacity:0},{y:0,opacity:1,duration:.55,delay:.18,stagger:.08,ease:"power2.out"});
+  });
+  return()=>ctx.revert();
+ },[active]);
+ const navigate=useCallback((direction:-1|1)=>{
+  const target=active+direction; const now=Date.now();
+  if(target<0||target>=chapters.length||changing.current||now-lastNav.current<500)return;
+  if(direction===1&&!ready)return;
+  lastNav.current=now;changing.current=true;
+  const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finish=()=>{setActive(target);window.setTimeout(()=>{changing.current=false;},500);};
+  if(reduced){finish();return;}
+  gsap.to([copyRef.current,visualRef.current],{y:-18,opacity:0,filter:"blur(3px)",duration:.28,ease:"power2.in",stagger:.035,onComplete:finish});
+ },[active,ready]);
+ const previous=useCallback(()=>navigate(-1),[navigate]);
+ const next=useCallback(()=>navigate(1),[navigate]);
  useEffect(()=>{
   const onWheel=(event:WheelEvent)=>{const target=event.target as HTMLElement|null;if(target?.closest("input,button,a,select,textarea,.guided-sources"))return;if(Math.abs(event.deltaY)<18)return;event.preventDefault();if(event.deltaY>0)next();else previous();};
   const onKey=(event:KeyboardEvent)=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const target=event.target as HTMLElement|null;
@@ -113,12 +136,15 @@ export function GuidedJourney() {
   <header className="guided-top"><span className="guided-brand">RECURRING<span> / FIELD NOTES ON SEQUENCE</span></span><span className="guided-mode">A GUIDED VISUAL JOURNEY</span></header>
   <div className="guided-progress" role="progressbar" aria-label="Story progress" aria-valuemin={1} aria-valuemax={chapters.length} aria-valuenow={active+1}><span style={{width:progress}}/></div>
   <p className="sr-only" aria-live="polite" aria-atomic="true">{chapter.title}. {chapter.deck}</p>
-  <section className="guided-chapter" aria-labelledby="chapter-title"><div className="chapter-copy"><p className="chapter-eyebrow">{chapter.eyebrow}</p>
+  <section className="guided-chapter" aria-labelledby="chapter-title"><div className="chapter-copy" ref={copyRef}><p className="chapter-eyebrow">{chapter.eyebrow}</p>
    <h1 key={active} id="chapter-title">{chapter.title}</h1><p className="chapter-deck">{chapter.deck}</p><p className="chapter-index">{String(active+1).padStart(2,"0")} <i>/</i> {String(chapters.length).padStart(2,"0")}</p></div>
-   <div className={"chapter-visual visual-"+active} key={"visual-"+active}><ChapterVisual index={active}/></div></section>
-  <footer className="guided-bottom"><button className="journey-back" type="button" onClick={previous} disabled={active===0}>← BACK</button>
-   <div className={"journey-cue "+(ready?"is-ready":"")} aria-live="polite">{ready?<><span className="cue-spark" aria-hidden="true">↟</span><span>SWIPE UP OR SCROLL DOWN TO CONTINUE</span></>:<><span className="cue-track"><i style={{animationDuration:dwell+"ms"}}/></span><span>TAKE A MOMENT WITH THIS IDEA</span></>}</div>
-   <button className="journey-next" type="button" onClick={active===chapters.length-1?()=>setActive(0):next} disabled={active!==chapters.length-1&&!ready}>{active===chapters.length-1?"RESTART ↺":"CONTINUE →"}</button></footer>
+   <div className={"chapter-visual visual-"+active} key={"visual-"+active} ref={visualRef}><ChapterVisual index={active}/></div></section>
+  <footer className="guided-bottom">
+   <span className="journey-position">{String(active+1).padStart(2,"0")} <i>/</i> {String(chapters.length).padStart(2,"0")}</span>
+   <span className="reading-thread" aria-hidden="true"><i key={active} style={{animationDuration:dwell+"ms"}}/></span>
+   {ready&&active<chapters.length-1&&<div className={"journey-cue cue-"+cueSide} aria-live="polite"><span className="cue-spark" aria-hidden="true">{cueVariant===2||cueVariant===4?"↑":"↓"}</span><span>{cues[cueVariant]}</span></div>}
+   {ready&&active===chapters.length-1&&<div className="journey-cue cue-right" aria-live="polite"><span className="cue-spark" aria-hidden="true">↓</span><span>swipe down to revisit the ideas</span></div>}
+  </footer>
  </main>;
 }
 
