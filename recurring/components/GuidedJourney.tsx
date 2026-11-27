@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { TouchEvent } from "react";
+import type { CSSProperties } from "react";
 import { gsap } from "gsap";
 
 const chapters = [
@@ -34,6 +35,17 @@ function RnnSculpture() {
 function SequenceMarks() {
  return <div className="sequence-demo"><div className="sequence-line"><span>I</span><span>love</span><span>neural</span><span>networks.</span></div>
   <div className="sequence-context"><span>“bank” after <b>river</b></span><span>“bank” after <b>loan</b></span></div><p>Same next word. Different context. Context changes the prediction.</p></div>;
+}
+function FoxTrail() {
+ return <div className="fox-trail" role="img" aria-label="An illustrated fox follows a trail of sequence signals to guess what comes next.">
+  <svg viewBox="0 0 620 390" aria-hidden="true">
+   <path className="fox-hill" d="M0 309 Q115 252 230 296 T450 286 T620 260 V390 H0Z"/>
+   <path className="fox-path" d="M32 278 C128 215 198 335 300 264 S475 221 590 151"/>
+   {[{x:54,y:265,t:"x₁"},{x:201,y:286,t:"x₂"},{x:356,y:250,t:"x₃"},{x:518,y:190,t:"?"}].map((n,i)=><g className="fox-token" style={{animationDelay:`${i*.2}s`}} key={n.t}><circle cx={n.x} cy={n.y} r="22"/><text x={n.x} y={n.y+5}>{n.t}</text></g>)}
+   <g className="fox" transform="translate(240 123)"><path className="fox-tail" d="M62 103 C12 91 23 32 63 45 C91 54 78 81 59 76 C48 73 51 62 60 62"/><ellipse className="fox-body" cx="104" cy="105" rx="61" ry="34"/><path className="fox-neck" d="M131 99 L155 60 L175 97Z"/><circle className="fox-head" cx="158" cy="59" r="29"/><path className="fox-ear" d="M140 39 L143 4 L163 34 M164 36 L185 10 L181 48Z"/><path className="fox-muzzle" d="M178 63 Q206 67 190 82 L171 79Z"/><circle className="fox-eye" cx="166" cy="55" r="3"/><path className="fox-leg" d="M76 124l-5 28m28-26 2 28m42-32 7 29m-26-34 3 35"/><path className="fox-smile" d="M178 74q8 5 13 0"/></g>
+   <circle className="fox-firefly" r="7"><animateMotion dur="5s" repeatCount="indefinite" path="M32 278 C128 215 198 335 300 264 S475 221 590 151"/></circle>
+  </svg><p>Follow the clues. What might come next?</p>
+ </div>;
 }
 function StateEquation() {
  return <div className="equation-demo" aria-label="The hidden state at time t is a function of the current input and previous hidden state.">
@@ -84,7 +96,7 @@ function FinalSources() {
 }
 function ChapterVisual({index}:{index:number}) {
  switch(index) {
-  case 0:return <SequenceMarks/>; case 1:return <RnnSculpture/>; case 2:return <StateEquation/>; case 3:return <UnrolledCells/>; case 4:return <div className="output-demo"><div className="output-nodes"><span>sequence x₁ … xₜ</span><b>vanilla RNN</b><span>ŷₜ</span></div><div className="loss-bar"><span>target yₜ</span><i/><strong>LOSS</strong></div><p>Training adjusts shared weights to reduce prediction error on examples.</p></div>;
+  case 0:return <><FoxTrail/><SequenceMarks/></>; case 1:return <RnnSculpture/>; case 2:return <StateEquation/>; case 3:return <UnrolledCells/>; case 4:return <div className="output-demo"><div className="output-nodes"><span>sequence x₁ … xₜ</span><b>vanilla RNN</b><span>ŷₜ</span></div><div className="loss-bar"><span>target yₜ</span><i/><strong>LOSS</strong></div><p>Training adjusts shared weights to reduce prediction error on examples.</p></div>;
   case 5:return <TrainingFlow/>; case 6:return <div className="whole-rnn"><div><small>1 · READ</small><b>Input sequence</b><span>x₁, x₂, …, xₜ</span></div><i>→</i><div><small>2 · UPDATE</small><b>Hidden state</b><span>hₜ = f(xₜ, hₜ₋₁)</span></div><i>→</i><div><small>3 · PREDICT</small><b>Output & loss</b><span>ŷₜ compared with yₜ</span></div><i>→</i><div><small>4 · LEARN</small><b>BPTT</b><span>update shared weights</span></div></div>;
   case 7:return <GradientLab/>; case 8:return <div className="problem-map"><div><span>EARLIER CLUE</span><b>“The book…”</b></div><i>· · · many recurrent steps · · ·</i><div><span>MUCH LATER</span><b>“…was old.”</b></div><p>Will the useful learning signal survive all those repeated transformations?</p></div>;
   case 9:return <LstmGates/>; case 10:return <GruGates/>; case 11:return <div className="choice-map"><div><b>VANILLA RNN</b><span>compact · short/local patterns</span></div><div><b>LSTM</b><span>cell state + three gates</span></div><div><b>GRU</b><span>hidden state + two gates</span></div><p>Try the simplest model that fits. Measure performance; the architecture name alone is no guarantee.</p></div>;
@@ -96,15 +108,20 @@ export function GuidedJourney() {
  const [cueVariant,setCueVariant]=useState(0); const [cueSide,setCueSide]=useState<"left"|"right">("right");
  const touchStart=useRef<number|null>(null); const lastNav=useRef(0); const changing=useRef(false);
  const copyRef=useRef<HTMLDivElement>(null); const visualRef=useRef<HTMLDivElement>(null); const chapter=chapters[active];
+ const scenes=[
+  {bg:"#f4eddf",ink:"#28372f",muted:"#617066",accent:"#c35d3d",card:"#e8dbc6"},{bg:"#dcebed",ink:"#173f48",muted:"#456b70",accent:"#e07b55",card:"#c8dfe0"},{bg:"#eee8f4",ink:"#322a49",muted:"#716982",accent:"#8f67c9",card:"#e1d8ef"},{bg:"#f4e3d8",ink:"#452f29",muted:"#806357",accent:"#cd6047",card:"#e9cbbb"},{bg:"#e5ecd9",ink:"#263d31",muted:"#5e725f",accent:"#b66c3d",card:"#d2dfc4"},{bg:"#172e3b",ink:"#f0f3df",muted:"#a9c0be",accent:"#80d6ca",card:"#244454"},{bg:"#f4e7b7",ink:"#32382e",muted:"#73755f",accent:"#b75838",card:"#e7d589"},{bg:"#322343",ink:"#fff0d3",muted:"#d2bdd9",accent:"#f2a26e",card:"#49335c"},{bg:"#e6f0ed",ink:"#203d3a",muted:"#62807a",accent:"#d15a46",card:"#cfdfd9"},{bg:"#203c32",ink:"#f4f1dc",muted:"#bbcab6",accent:"#e2a15d",card:"#315849"},{bg:"#dce8f5",ink:"#24364f",muted:"#62768d",accent:"#477fd1",card:"#c7d8eb"},{bg:"#f1e8dd",ink:"#38352f",muted:"#777064",accent:"#bd6747",card:"#e6d9c9"},{bg:"#e8e2d4",ink:"#25332d",muted:"#65726a",accent:"#a94e37",card:"#dbd1bd"}
+ ];
  const cues=["follow the signal · scroll down","the next thought is below · scroll","swipe up when you're ready","let the story carry on · scroll","lift the page to follow"];
  const words=useMemo(()=>chapter.deck.split(/\s+/).length,[chapter.deck]); const dwell=Math.min(10500,Math.max(chapter.seconds*1000,3500+words*85));
  useEffect(()=>{setReady(false);const timer=window.setTimeout(()=>{setCueVariant(Math.floor(Math.random()*cues.length));setCueSide(Math.random()>.5?"left":"right");setReady(true);},dwell);return()=>window.clearTimeout(timer);},[active,dwell]);
  useLayoutEffect(()=>{
   if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const entrances=[{x:70,y:25,rotation:2,scale:.94},{x:0,y:85,rotation:-2,scale:.92},{x:-90,y:10,rotation:1,scale:.96},{x:45,y:-70,rotation:3,scale:.9}];
+  const entry=entrances[active%entrances.length];
   const ctx=gsap.context(()=>{
-   gsap.fromTo(copyRef.current,{y:30,opacity:0},{y:0,opacity:1,duration:.72,ease:"power3.out"});
-   gsap.fromTo(visualRef.current,{y:14,scale:.965,opacity:0,rotateX:-2},{y:0,scale:1,opacity:1,rotateX:0,duration:.9,delay:.08,ease:"power3.out"});
-   gsap.fromTo(".chapter-eyebrow, .chapter-deck, .chapter-index",{y:12,opacity:0},{y:0,opacity:1,duration:.55,delay:.18,stagger:.08,ease:"power2.out"});
+   gsap.fromTo(copyRef.current,{x:entry.x*.55,y:entry.y*.55,rotation:entry.rotation*.4,opacity:0},{x:0,y:0,rotation:0,opacity:1,duration:.78,ease:"power4.out"});
+   gsap.fromTo(visualRef.current,{x:-entry.x,y:-entry.y,rotation:entry.rotation,scale:entry.scale,opacity:0},{x:0,y:0,rotation:0,scale:1,opacity:1,duration:1.05,delay:.08,ease:"back.out(1.25)"});
+   gsap.fromTo(".chapter-eyebrow, .chapter-deck, .chapter-index",{y:18,opacity:0},{y:0,opacity:1,duration:.62,delay:.22,stagger:.1,ease:"power3.out"});
   });
   return()=>ctx.revert();
  },[active]);
@@ -116,7 +133,10 @@ export function GuidedJourney() {
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finish=()=>{setActive(target);window.setTimeout(()=>{changing.current=false;},1000);};
   if(reduced){finish();return;}
-  gsap.to([copyRef.current,visualRef.current],{y:-18,opacity:0,filter:"blur(3px)",duration:.28,ease:"power2.in",stagger:.035,onComplete:finish});
+  const exits=[{x:-100,y:-12,rotation:-3,scale:.96},{x:0,y:-95,rotation:2,scale:.92},{x:105,y:15,rotation:-2,scale:.96},{x:0,y:90,rotation:3,scale:.9}];
+  const exit=exits[active%exits.length];
+  gsap.to(copyRef.current,{x:exit.x*.5,y:exit.y*.5,rotation:exit.rotation,opacity:0,duration:.3,ease:"power3.in"});
+  gsap.to(visualRef.current,{x:exit.x,y:exit.y,rotation:exit.rotation*1.5,scale:exit.scale,opacity:0,duration:.38,ease:"power3.in",onComplete:finish});
  },[active,ready]);
  const previous=useCallback(()=>navigate(-1),[navigate]);
  const next=useCallback(()=>navigate(1),[navigate]);
@@ -131,20 +151,15 @@ export function GuidedJourney() {
  },[next,previous]);
  const onTouchStart=(event:TouchEvent)=>{touchStart.current=event.changedTouches[0]?.clientY??null;};
  const onTouchEnd=(event:TouchEvent)=>{if(touchStart.current===null)return;const target=event.target as HTMLElement|null;if(target?.closest(".guided-sources")){touchStart.current=null;return;}const delta=touchStart.current-(event.changedTouches[0]?.clientY??touchStart.current);if(Math.abs(delta)>55){if(delta>0)next();else previous();}touchStart.current=null;};
- const progress=((active+1)/chapters.length*100)+"%";
- return <main className="guided-shell" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-  <header className="guided-top"><span className="guided-brand">RECURRING<span> / FIELD NOTES ON SEQUENCE</span></span><span className="guided-mode">A GUIDED VISUAL JOURNEY</span></header>
-  <div className="guided-progress" role="progressbar" aria-label="Story progress" aria-valuemin={1} aria-valuemax={chapters.length} aria-valuenow={active+1}><span style={{width:progress}}/></div>
+ const scene=scenes[active];
+ const sceneStyle={"--scene-bg":scene.bg,"--scene-ink":scene.ink,"--scene-muted":scene.muted,"--scene-accent":scene.accent,"--scene-card":scene.card} as CSSProperties;
+ return <main className={`guided-shell scene-${active}`} data-scene={active} style={sceneStyle} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
   <p className="sr-only" aria-live="polite" aria-atomic="true">{chapter.title}. {chapter.deck}</p>
-  <section className="guided-chapter" aria-labelledby="chapter-title"><div className="chapter-copy" ref={copyRef}><p className="chapter-eyebrow">{chapter.eyebrow}</p>
+  <section className={`guided-chapter scene-layout-${active}`} aria-labelledby="chapter-title"><div className="chapter-copy" ref={copyRef}><p className="chapter-eyebrow"><span>{chapter.eyebrow}</span><span className="chapter-mark">{String(active+1).padStart(2,"0")}</span></p>
    <h1 key={active} id="chapter-title">{chapter.title}</h1><p className="chapter-deck">{chapter.deck}</p><p className="chapter-index">{String(active+1).padStart(2,"0")} <i>/</i> {String(chapters.length).padStart(2,"0")}</p></div>
    <div className={"chapter-visual visual-"+active} key={"visual-"+active} ref={visualRef}><ChapterVisual index={active}/></div></section>
-  <footer className="guided-bottom">
-   <span className="journey-position">{String(active+1).padStart(2,"0")} <i>/</i> {String(chapters.length).padStart(2,"0")}</span>
-   <span className="reading-thread" aria-hidden="true"><i key={active} style={{animationDuration:dwell+"ms"}}/></span>
-   {ready&&active<chapters.length-1&&<div className={"journey-cue cue-"+cueSide} aria-live="polite"><span className="cue-spark" aria-hidden="true">{cueVariant===2||cueVariant===4?"↑":"↓"}</span><span>{cues[cueVariant]}</span></div>}
-   {ready&&active===chapters.length-1&&<div className="journey-cue cue-right" aria-live="polite"><span className="cue-spark" aria-hidden="true">↓</span><span>swipe down to revisit the ideas</span></div>}
-  </footer>
+  {ready&&active<chapters.length-1&&<div className={`journey-cue cue-${cueSide}`} aria-live="polite"><span className="cue-spark" aria-hidden="true">{cueVariant===2||cueVariant===4?"↑":"↓"}</span><span>{cues[cueVariant]}</span></div>}
+  {ready&&active===chapters.length-1&&<div className="journey-cue cue-right" aria-live="polite"><span className="cue-spark" aria-hidden="true">↓</span><span>swipe down to revisit the ideas</span></div>}
  </main>;
 }
 
