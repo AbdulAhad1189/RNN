@@ -110,11 +110,11 @@ export function GuidedJourney() {
  },[active]);
  const navigate=useCallback((direction:-1|1)=>{
   const target=active+direction; const now=Date.now();
-  if(target<0||target>=chapters.length||changing.current||now-lastNav.current<500)return;
+  if(target<0||target>=chapters.length||changing.current||now-lastNav.current<1000)return;
   if(direction===1&&!ready)return;
   lastNav.current=now;changing.current=true;
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const finish=()=>{setActive(target);window.setTimeout(()=>{changing.current=false;},500);};
+  const finish=()=>{setActive(target);window.setTimeout(()=>{changing.current=false;},1000);};
   if(reduced){finish();return;}
   gsap.to([copyRef.current,visualRef.current],{y:-18,opacity:0,filter:"blur(3px)",duration:.28,ease:"power2.in",stagger:.035,onComplete:finish});
  },[active,ready]);
