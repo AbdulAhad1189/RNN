@@ -1,0 +1,267 @@
+{
+  "description": "PyTorch autograd derivatives for a fixed scalar tanh recurrence; illustrative experiment, not Elman (1990) data.",
+  "model": "h_t = tanh(0.95 * h_(t-1) + 0.1), h_0 = 0.1; reported quantity is |d h_T / d h_0|",
+  "weight": 0.95,
+  "rows": [
+    {
+      "steps": 0,
+      "gradient_magnitude": 1.0
+    },
+    {
+      "steps": 1,
+      "gradient_magnitude": 0.9147726389012724
+    },
+    {
+      "steps": 2,
+      "gradient_magnitude": 0.8030160246641751
+    },
+    {
+      "steps": 3,
+      "gradient_magnitude": 0.6710972956041122
+    },
+    {
+      "steps": 4,
+      "gradient_magnitude": 0.5330227898585017
+    },
+    {
+      "steps": 5,
+      "gradient_magnitude": 0.4038489317706852
+    },
+    {
+      "steps": 6,
+      "gradient_magnitude": 0.293990600038833
+    },
+    {
+      "steps": 7,
+      "gradient_magnitude": 0.20737663658053698
+    },
+    {
+      "steps": 8,
+      "gradient_magnitude": 0.1428805947199101
+    },
+    {
+      "steps": 9,
+      "gradient_magnitude": 0.09679926890360896
+    },
+    {
+      "steps": 10,
+      "gradient_magnitude": 0.06481613734374819
+    },
+    {
+      "steps": 11,
+      "gradient_magnitude": 0.0430553051452011
+    },
+    {
+      "steps": 12,
+      "gradient_magnitude": 0.028447198943535843
+    },
+    {
+      "steps": 13,
+      "gradient_magnitude": 0.018728386794905856
+    },
+    {
+      "steps": 14,
+      "gradient_magnitude": 0.012300824037129631
+    },
+    {
+      "steps": 15,
+      "gradient_magnitude": 0.008066612695280136
+    },
+    {
+      "steps": 16,
+      "gradient_magnitude": 0.005284493454973832
+    },
+    {
+      "steps": 17,
+      "gradient_magnitude": 0.0034595824131084278
+    },
+    {
+      "steps": 18,
+      "gradient_magnitude": 0.0022638766252135265
+    },
+    {
+      "steps": 19,
+      "gradient_magnitude": 0.00148100528225435
+    },
+    {
+      "steps": 20,
+      "gradient_magnitude": 0.0009686759267837996
+    },
+    {
+      "steps": 21,
+      "gradient_magnitude": 0.0006335002483915095
+    },
+    {
+      "steps": 22,
+      "gradient_magnitude": 0.00041426667758511025
+    },
+    {
+      "steps": 23,
+      "gradient_magnitude": 0.0002708883179900993
+    },
+    {
+      "steps": 24,
+      "gradient_magnitude": 0.00017712732035923422
+    },
+    {
+      "steps": 25,
+      "gradient_magnitude": 0.00011581665574451198
+    },
+    {
+      "steps": 26,
+      "gradient_magnitude": 7.572688188600724e-05
+    },
+    {
+      "steps": 27,
+      "gradient_magnitude": 4.951364923758667e-05
+    },
+    {
+      "steps": 28,
+      "gradient_magnitude": 3.237405161275895e-05
+    },
+    {
+      "steps": 29,
+      "gradient_magnitude": 2.1167393383994097e-05
+    },
+    {
+      "steps": 30,
+      "gradient_magnitude": 1.384001417790086e-05
+    },
+    {
+      "steps": 31,
+      "gradient_magnitude": 9.049090312315004e-06
+    },
+    {
+      "steps": 32,
+      "gradient_magnitude": 5.91660817260267e-06
+    },
+    {
+      "steps": 33,
+      "gradient_magnitude": 3.868480106791168e-06
+    },
+    {
+      "steps": 34,
+      "gradient_magnitude": 2.5293429137113952e-06
+    },
+    {
+      "steps": 35,
+      "gradient_magnitude": 1.6537692672964007e-06
+    },
+    {
+      "steps": 36,
+      "gradient_magnitude": 1.0812896099954878e-06
+    },
+    {
+      "steps": 37,
+      "gradient_magnitude": 7.069831823570168e-07
+    },
+    {
+      "steps": 38,
+      "gradient_magnitude": 4.6224912406069875e-07
+    },
+    {
+      "steps": 39,
+      "gradient_magnitude": 3.0223383728574436e-07
+    },
+    {
+      "steps": 40,
+      "gradient_magnitude": 1.9761051806366414e-07
+    },
+    {
+      "steps": 41,
+      "gradient_magnitude": 1.2920431483152382e-07
+    },
+    {
+      "steps": 42,
+      "gradient_magnitude": 8.447806756252729e-08
+    },
+    {
+      "steps": 43,
+      "gradient_magnitude": 5.5234562650085595e-08
+    },
+    {
+      "steps": 44,
+      "gradient_magnitude": 3.611418889761409e-08
+    },
+    {
+      "steps": 45,
+      "gradient_magnitude": 2.3612654308297556e-08
+    },
+    {
+      "steps": 46,
+      "gradient_magnitude": 1.543873637547557e-08
+    },
+    {
+      "steps": 47,
+      "gradient_magnitude": 1.0094357766396338e-08
+    },
+    {
+      "steps": 48,
+      "gradient_magnitude": 6.600025812132531e-09
+    },
+    {
+      "steps": 49,
+      "gradient_magnitude": 4.315315713216155e-09
+    },
+    {
+      "steps": 50,
+      "gradient_magnitude": 2.82149649479421e-09
+    },
+    {
+      "steps": 51,
+      "gradient_magnitude": 1.8447879590572858e-09
+    },
+    {
+      "steps": 52,
+      "gradient_magnitude": 1.2061835339371573e-09
+    },
+    {
+      "steps": 53,
+      "gradient_magnitude": 7.886427869254018e-10
+    },
+    {
+      "steps": 54,
+      "gradient_magnitude": 5.156408024214683e-10
+    },
+    {
+      "steps": 55,
+      "gradient_magnitude": 3.3714305324588503e-10
+    },
+    {
+      "steps": 56,
+      "gradient_magnitude": 2.204353065414798e-10
+    },
+    {
+      "steps": 57,
+      "gradient_magnitude": 1.4412791217510693e-10
+    },
+    {
+      "steps": 58,
+      "gradient_magnitude": 9.423560768685078e-11
+    },
+    {
+      "steps": 59,
+      "gradient_magnitude": 6.161436478184903e-11
+    },
+    {
+      "steps": 60,
+      "gradient_magnitude": 4.028551458018193e-11
+    },
+    {
+      "steps": 61,
+      "gradient_magnitude": 2.634000513886348e-11
+    },
+    {
+      "steps": 62,
+      "gradient_magnitude": 1.7221968688823235e-11
+    },
+    {
+      "steps": 63,
+      "gradient_magnitude": 1.1260294140206608e-11
+    },
+    {
+      "steps": 64,
+      "gradient_magnitude": 7.362353655077575e-12
+    }
+  ]
+}
