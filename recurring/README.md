@@ -6,9 +6,9 @@ An interactive visual journey through recurrent neural networks, grounded in Jef
 
 Research papers are essential, but they can be difficult to approach when an idea is introduced through dense academic language, equations, and static diagrams. I wanted to make the core idea of recurrence easier to experience: a network receives a sequence, carries context forward, and uses what came before to shape what comes next.
 
-RECURRING turns that idea into a scroll-based visual story. The diagrams, small interactions, and experiment are designed to make the concepts easier to follow while keeping the original research and its limits visible. It is an educational companion to the paper, not a replacement for reading it.
+RECURRING turns that idea into a paced, chapter-based visual story. Each chapter asks the visitor to spend a short reading interval before it reveals the swipe/scroll cue. The diagrams, 3D recurrent-cell visualization, and small interactions make the concepts easier to follow while keeping the original research and its limits visible. It is an educational companion to the paper, not a replacement for reading it.
 
-The project focuses on memory, recurrence, shared computation through time, backpropagation through time, vanishing gradients, long-range dependencies, and the later development of LSTM. It distinguishes Elman's 1990 work from later research and labels explanatory examples and generated data clearly.
+The project builds up the vanilla RNN first: sequence inputs, hidden state, shared weights, outputs, loss, and backpropagation through time. It then explains vanishing and exploding gradients as learning difficulties, before introducing LSTM and GRU as later gated recurrent designs. It distinguishes Elman's 1990 work from later research and labels explanatory examples and generated data clearly. Wheel/trackpad and touch gestures advance only after the chapter's reading interval; keyboard arrows and the Continue control are also available.
 
 ## Run locally
 
@@ -30,7 +30,7 @@ The experience distinguishes Elman's 1990 proposal and simulations from later ac
 
 ## Motion, access, and performance
 
-The network artwork is inline SVG and remains understandable without animation. The experience honors `prefers-reduced-motion`, uses semantic sections and headings, keyboard-operable native links and range input, visible focus indicators, and a live value announcement for the experiment. Lenis smooth scrolling is disabled for reduced-motion users. SVG is used instead of canvas or a 3D dependency. The SVG has accessible title and description text. There are no external fonts, large image downloads, or autoplay media.
+The recurrent cell uses CSS 3D transforms, with no WebGL dependency, and remains understandable without animation. The experience honors `prefers-reduced-motion`, uses semantic headings, keyboard-operable controls, visible focus indicators, and a live value announcement for the gradient demonstration. Gestures have keyboard and button alternatives. There are no external fonts, large image downloads, or autoplay media.
 
 ## Deployment
 
